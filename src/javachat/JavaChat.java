@@ -50,7 +50,7 @@ public class JavaChat {
 		println("Connecting to server " + hostname + ":" + port);
 		try {
 			int portVal = Integer.parseInt(port);
-			client = Client.createClient("localhost", portVal, clientName, false);
+			client = Client.createClient(hostname, portVal, clientName, false);
 		} catch (ConnectException ex) {
 			return false;
 		} catch (NumberFormatException e){

@@ -183,26 +183,34 @@ public class Server implements Runnable {
             nextKeepAlive = System.currentTimeMillis() + 1000;
         }
 
+        //Send message received on the method to all clients connected
+        public void sendMsgToAll(Packet msg){
+            for (ClientSocket client : clients) {
+                if(client!=this){
+                    client.sendMsg(msg);
+                }
+            }
+        }
+
         @Override
         public void receiveMsg(Packet msg) {
             if (msg != null) {
                 switch (msg.getType()) {
                     case MSG:
                         // Send message back to all other clients
-                        sendMsg(msg);
-                        JavaChat.println(msg.getData()[0]);
+                        sendMsgToAll(msg);
                         break;
                     case HELO:
                         name = msg.getData()[0];
                         String connectedMsg = name + " connected...";
-                        sendMsg(Packet.createMsgPacket(connectedMsg));
+                        sendMsgToAll(Packet.createMsgPacket(connectedMsg));
                         printClientNames();
                         break;
                     case NAME:
                         String names[] = msg.getData();
                         String newNameMsg = names[0] + " changed name to " + names[1];
                         name = names[1];
-                        sendMsg(Packet.createMsgPacket(newNameMsg));
+                        sendMsgToAll(Packet.createMsgPacket(newNameMsg));
                         break;
                     case PONG:
                         nextKeepAlive = System.currentTimeMillis() + 60 * 1000;
@@ -210,7 +218,7 @@ public class Server implements Runnable {
                         break;
                     case QUIT:
                         this.disconnect();
-                        JavaChat.println("Client disconnected.");
+                        JavaChat.println("Client "+ this.getName() +" disconnected.");
                         break;
                     default:
                         JavaChat.println("Unknown packet type from connection: " + msg.getType());

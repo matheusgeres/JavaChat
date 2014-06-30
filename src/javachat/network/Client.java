@@ -58,9 +58,7 @@ public class Client extends SocketController {
             switch (msg.getType()) {
                 case MSG:
                     // Send message back to all other clients
-                    if (!server) {
-                        JavaChat.println(msg.getData()[0]);
-                    }
+                    JavaChat.println(msg.getData()[0]);
                     break;
                 case PING:
                     sendMsg(Packet.createPongPacket());
@@ -100,7 +98,7 @@ public class Client extends SocketController {
     public void sendMsg(String msg) {
         String fullMessage = "[" + name + "] " + msg;
         super.sendMsg(fullMessage);
-        // JavaChat.println(fullMessage); //gerava duplicidade, pois o ja eh capturado quando roda a thread no metodo receiveMsg
+        JavaChat.println(fullMessage); //gerava duplicidade, pois o ja eh capturado quando roda a thread no metodo receiveMsg
     }
 
     private void sendHello() {
@@ -111,6 +109,7 @@ public class Client extends SocketController {
      * @param name the name to set
      */
     public void setName(String name) {
+        JavaChat.println(this.name + " changed name to " + name);
         sendMsg(Packet.createNamePacket(this.name, name));
         this.name = name;
     }
