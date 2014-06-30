@@ -34,7 +34,8 @@ public class IPUtil {
 	public static String getExternalIPAddress(){
 		BufferedReader in = null;
 		try {
-			URL whatismyip = new URL("http://automation.whatismyip.com/n09230945.asp");
+//			URL whatismyip = new URL("http://automation.whatismyip.com/n09230945.asp");
+                        URL whatismyip = new URL("http://checkip.amazonaws.com");
 			in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 			return in.readLine(); //you get the IP as a String
 		} catch (IOException ex) {

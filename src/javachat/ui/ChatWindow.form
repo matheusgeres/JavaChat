@@ -10,6 +10,7 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -159,8 +160,8 @@
       <SubComponents>
         <Component class="javax.swing.JTextArea" name="jTextAreaChat">
           <Properties>
-            <Property name="columns" type="int" value="20"/>
             <Property name="editable" type="boolean" value="false"/>
+            <Property name="columns" type="int" value="20"/>
             <Property name="rows" type="int" value="5"/>
           </Properties>
         </Component>
@@ -176,7 +177,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldName">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Unknown"/>
+        <Property name="text" type="java.lang.String" value="user"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">

@@ -1,8 +1,11 @@
 package javachat.network.socket;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import javachat.JavaChat;
 import javachat.network.message.Packet;
@@ -31,8 +34,8 @@ public abstract class SocketController implements Runnable {
 			
 			output = new ObjectOutputStream(socket.getOutputStream());
 			input = new ObjectInputStream(socket.getInputStream());
-			//output = new PrintWriter(socket.getOutputStream(), true);
-			//input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//			output = new PrintWriter(socket.getOutputStream(), true);
+//			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			
 			new Thread(this).start();
 		} catch (IOException ex) {

@@ -88,8 +88,8 @@ public class ChatWindow extends javax.swing.JFrame {
             }
         });
 
-        jTextAreaChat.setColumns(20);
         jTextAreaChat.setEditable(false);
+        jTextAreaChat.setColumns(20);
         jTextAreaChat.setRows(5);
         jScrollPane1.setViewportView(jTextAreaChat);
 
@@ -100,7 +100,7 @@ public class ChatWindow extends javax.swing.JFrame {
             }
         });
 
-        jTextFieldName.setText("Unknown");
+        jTextFieldName.setText("user");
 
         jLabel1.setText("Name:");
 
@@ -183,10 +183,12 @@ public class ChatWindow extends javax.swing.JFrame {
 
 	private void jRadioButtonServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonServerActionPerformed
 		jTextFieldHostname.setEnabled(false);
+                jTextFieldName.setText("server");
 	}//GEN-LAST:event_jRadioButtonServerActionPerformed
 
 	private void jRadioButtonClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonClientActionPerformed
 		jTextFieldHostname.setEnabled(true);
+                jTextFieldName.setText("user");
 	}//GEN-LAST:event_jRadioButtonClientActionPerformed
 
 	private void jToggleButtonOnlineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButtonOnlineActionPerformed

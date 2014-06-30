@@ -36,7 +36,7 @@ public class JavaChat {
 				} catch (InterruptedException ex) {}
 			}
 			// Set up a client connecting to our own server for us to send and receive on
-			client = Client.createClient("localhost", portVal, clientName);
+			client = Client.createClient("localhost", portVal, clientName, true);
 		} catch (ConnectException ex) {
 			return false;
 		} catch (NumberFormatException e){
@@ -50,7 +50,7 @@ public class JavaChat {
 		println("Connecting to server " + hostname + ":" + port);
 		try {
 			int portVal = Integer.parseInt(port);
-			client = Client.createClient("localhost", portVal, clientName);
+			client = Client.createClient("localhost", portVal, clientName, false);
 		} catch (ConnectException ex) {
 			return false;
 		} catch (NumberFormatException e){
