@@ -122,6 +122,16 @@ public class Server implements Runnable {
         System.out.println(users);
         JavaChat.println(users);
     }
+    
+    public String printClientNamesToClients() {
+        StringBuilder sb = new StringBuilder();
+        for (ClientSocket client : clients) {
+            sb.append(client.getName());
+            sb.append(" ");
+        }
+        String users = "Users: " + sb.toString();
+        return users;
+    }
 
     private class KeepAlive implements Runnable {
 
@@ -198,7 +208,11 @@ public class Server implements Runnable {
                 switch (msg.getType()) {
                     case MSG:
                         // Send message back to all other clients
-                        sendMsgToAll(msg);
+                        if(msg.getData()[0].contains("/users")){
+                            sendMsgToAll(new Packet(PacketType.MSG, new String[] {printClientNamesToClients()}));
+                        }else{
+                            sendMsgToAll(msg);
+                        }
                         break;
                     case HELO:
                         name = msg.getData()[0];
