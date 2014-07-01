@@ -5,7 +5,9 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import javachat.JavaChat;
+import javachat.network.message.HeloPacket;
 import javachat.network.message.Packet;
+import javachat.network.message.QuitPacket;
 import javachat.network.socket.SocketController;
 
 /**
@@ -65,12 +67,26 @@ public class Client extends SocketController {
                     //JavaChat.println("Ping!");
                     break;
                 case QUIT:
-                    if (!socketCtrl.isDisconnecting()) {
+                    if (socketCtrl!=null&&socketCtrl.isDisconnecting()) {
                         disconnect();
                     }
-                    JavaChat.println("Client disconnected.");
+                    if(msg.getObject()!=null&&msg.getObject() instanceof QuitPacket){
+                        QuitPacket qp = (QuitPacket) msg.getObject();
+                        JavaChat.setUsersOnline(qp.getUsers());
+                        JavaChat.println("Client "+ qp.getUser() +" disconnected.");
+                    }else{
+                        JavaChat.println("Client disconnected.");
+                    }
+                    
                     break;
                 case HELO:
+                    if(msg.getObject()!=null&&msg.getObject() instanceof HeloPacket){
+                        HeloPacket helo = (HeloPacket) msg.getObject();
+                        JavaChat.println(helo.getName() + " connected...");
+                        if(helo.getUsers()!=null&&helo.getUsers().length>0){
+                            JavaChat.setUsersOnline(helo.getUsers());
+                        }
+                    }
                     break;
                 case NAME:
                     // Not expected

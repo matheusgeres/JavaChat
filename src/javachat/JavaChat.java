@@ -22,6 +22,10 @@ public class JavaChat {
 	public static void println(String text){
 		instance.println(text);
 	}
+        
+        public static void setUsersOnline(String[] users){
+                instance.setUsersOnline(users);
+        }
 	
 	public static boolean startServer(String port, String clientName){
 		println("Starting server on port " + port);
@@ -90,6 +94,7 @@ public class JavaChat {
 	public static void disconnected(){
 		instance.disconnected();
 		println("Disconnected from server.");
+                setUsersOnline(new String[] {""});
 	}
 	
 	/**

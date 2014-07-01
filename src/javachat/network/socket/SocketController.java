@@ -111,7 +111,10 @@ public abstract class SocketController implements Runnable {
 	
 	private void sendData(Packet data){
 		try {
-			output.writeObject(data);
+                    
+                    if(!socket.isClosed()){
+                        output.writeObject(data);
+                    }
 		} catch (IOException ex) {
 			JavaChat.println("Error writing to socket: " + ex.getMessage());
 		}

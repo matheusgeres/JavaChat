@@ -5,7 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -114,23 +116,30 @@ public class Server implements Runnable {
 
     public void printClientNames() {
         StringBuilder sb = new StringBuilder();
+        List<String> lUsers = new ArrayList<String>();
         for (ClientSocket client : clients) {
             sb.append(client.getName());
             sb.append(" ");
+            lUsers.add(client.getName());
         }
         String users = "Users: " + sb.toString();
         System.out.println(users);
-        JavaChat.println(users);
+//        JavaChat.println(users); //usado para aparecer os usuarios nas linhas de chat
+        JavaChat.setUsersOnline(lUsers.toArray(new String[0]));
     }
     
-    public String printClientNamesToClients() {
-        StringBuilder sb = new StringBuilder();
+    public String[] getNamesClientOnline() {
+        List<String> lUsers = new ArrayList<String>();
         for (ClientSocket client : clients) {
-            sb.append(client.getName());
-            sb.append(" ");
+            lUsers.add(client.getName());
         }
-        String users = "Users: " + sb.toString();
-        return users;
+        return lUsers.toArray(new String[0]);
+    }
+    
+    public void removeClientQueue(ClientSocket client){
+        if(client!=null){
+            clients.remove(client);
+        }
     }
 
     private class KeepAlive implements Runnable {
@@ -194,11 +203,18 @@ public class Server implements Runnable {
         }
 
         //Send message received on the method to all clients connected
-        public void sendMsgToAll(Packet msg){
+        public void sendMsgToAll(Packet msg, boolean yourSelf){
             for (ClientSocket client : clients) {
-                if(client!=this){
+                if(!(this==client&&!yourSelf)){
                     client.sendMsg(msg);
                 }
+            }
+        }
+        
+        //Send message received on the method to all clients connected
+        public void sendMsgToAll(Packet pkt){
+            for (ClientSocket client : clients) {
+                client.sendMsg(pkt);
             }
         }
 
@@ -208,23 +224,20 @@ public class Server implements Runnable {
                 switch (msg.getType()) {
                     case MSG:
                         // Send message back to all other clients
-                        if(msg.getData()[0].contains("/users")){
-                            sendMsgToAll(new Packet(PacketType.MSG, new String[] {printClientNamesToClients()}));
-                        }else{
-                            sendMsgToAll(msg);
-                        }
+                        sendMsgToAll(msg,false);
                         break;
                     case HELO:
                         name = msg.getData()[0];
                         String connectedMsg = name + " connected...";
-                        sendMsgToAll(Packet.createMsgPacket(connectedMsg));
+//                        sendMsgToAll(Packet.createMsgPacket(connectedMsg),true);
+                        sendMsgToAll(Packet.createHeloPacketObject(name, getNamesClientOnline()));
                         printClientNames();
                         break;
                     case NAME:
                         String names[] = msg.getData();
                         String newNameMsg = names[0] + " changed name to " + names[1];
                         name = names[1];
-                        sendMsgToAll(Packet.createMsgPacket(newNameMsg));
+                        sendMsgToAll(Packet.createMsgPacket(newNameMsg),true);
                         break;
                     case PONG:
                         nextKeepAlive = System.currentTimeMillis() + 60 * 1000;
@@ -232,7 +245,9 @@ public class Server implements Runnable {
                         break;
                     case QUIT:
                         this.disconnect();
-                        JavaChat.println("Client "+ this.getName() +" disconnected.");
+//                        JavaChat.println("Client "+ this.getName() +" disconnected.");
+                        removeClientQueue(this);
+                        sendMsgToAll(Packet.createQuitPacketObject(this.getName(),getNamesClientOnline()));
                         break;
                     default:
                         JavaChat.println("Unknown packet type from connection: " + msg.getType());
