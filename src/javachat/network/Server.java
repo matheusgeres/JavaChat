@@ -230,14 +230,17 @@ public class Server implements Runnable {
                         name = msg.getData()[0];
                         String connectedMsg = name + " connected...";
 //                        sendMsgToAll(Packet.createMsgPacket(connectedMsg),true);
-                        sendMsgToAll(Packet.createHeloPacketObject(name, getNamesClientOnline()));
+                        sendMsgToAll(Packet.createHeloPacketObject(name, getNamesClientOnline()),true);
                         printClientNames();
                         break;
                     case NAME:
-                        String names[] = msg.getData();
-                        String newNameMsg = names[0] + " changed name to " + names[1];
-                        name = names[1];
-                        sendMsgToAll(Packet.createMsgPacket(newNameMsg),true);
+//                        String names[] = msg.getData();
+//                        String newNameMsg = names[0] + " changed name to " + names[1];
+//                        name = names[1];
+//                        sendMsgToAll(Packet.createMsgPacket(newNameMsg),true);
+                        
+                        name = msg.getData()[1];
+                        sendMsgToAll(Packet.createNamePacketObject(msg.getData()[0], msg.getData()[1], getNamesClientOnline()),true);
                         break;
                     case PONG:
                         nextKeepAlive = System.currentTimeMillis() + 60 * 1000;
@@ -264,7 +267,7 @@ public class Server implements Runnable {
         public String getName() {
             return name;
         }
-
+        
         public long getNextKeepAlive() {
             return nextKeepAlive;
         }

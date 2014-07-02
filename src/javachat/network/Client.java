@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import javachat.JavaChat;
 import javachat.network.message.HeloPacket;
+import javachat.network.message.NamePacket;
 import javachat.network.message.Packet;
 import javachat.network.message.QuitPacket;
 import javachat.network.socket.SocketController;
@@ -89,8 +90,16 @@ public class Client extends SocketController {
                     }
                     break;
                 case NAME:
+                    if(msg.getObject()!=null&&msg.getObject() instanceof NamePacket){
+                        NamePacket np = (NamePacket) msg.getObject();
+                        JavaChat.println(np.getOldName()+" changed name to "+np.getNewName());
+                        if(np.getUsers()!=null&&np.getUsers().length>0){
+                            JavaChat.setUsersOnline(np.getUsers());
+                        }
+                    }
+                    
                     // Not expected
-                    JavaChat.println("Received unexpected packet type: " + msg.getType().name());
+//                    JavaChat.println("Received unexpected packet type: " + msg.getType().name());
                     break;
                 default:
                     JavaChat.println("Unknown packet type from connection: " + msg.getType().name());
@@ -125,7 +134,7 @@ public class Client extends SocketController {
      * @param name the name to set
      */
     public void setName(String name) {
-        JavaChat.println(this.name + " changed name to " + name);
+//        JavaChat.println(this.name + " changed name to " + name); 
         sendMsg(Packet.createNamePacket(this.name, name));
         this.name = name;
     }

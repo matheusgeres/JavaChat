@@ -47,6 +47,10 @@ public class Packet implements Serializable {
 	public static Packet createNamePacket(String oldName, String newName){
 		return new Packet(PacketType.NAME, new String[]{oldName,newName});
 	}
+        
+        public static Packet createNamePacketObject(String oldName, String newName, String[] users){
+                return new Packet(PacketType.NAME, new NamePacket(oldName, newName, users));
+        }
 	
 	public static Packet createMsgPacket(String msg){
 		return new Packet(PacketType.MSG, new String[]{msg});
