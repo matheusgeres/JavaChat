@@ -43,12 +43,20 @@ public class Packet implements Serializable {
         public static Packet createHeloPacketObject(String name, String[] users){
 		return new Packet(PacketType.HELO, new HeloPacket(name, users));
 	}
+        
+        public static Packet createHeloPacketObject(String name, String[] users, String key){
+		return new Packet(PacketType.HELO, new HeloPacket(name, users));
+	}
 	
 	public static Packet createNamePacket(String oldName, String newName){
 		return new Packet(PacketType.NAME, new String[]{oldName,newName});
 	}
         
         public static Packet createNamePacketObject(String oldName, String newName, String[] users){
+                return new Packet(PacketType.NAME, new NamePacket(oldName, newName, users));
+        }
+        
+        public static Packet createNamePacketObject(String oldName, String newName, String[] users, String key){
                 return new Packet(PacketType.NAME, new NamePacket(oldName, newName, users));
         }
 	
@@ -63,6 +71,10 @@ public class Packet implements Serializable {
         public static Packet createQuitPacketObject(String userLogOut, String[] users){
             return new Packet(PacketType.QUIT, new QuitPacket(userLogOut,users));
         }
+        
+        public static Packet createQuitPacketObject(String userLogOut, String[] users, String key){
+            return new Packet(PacketType.QUIT, new QuitPacket(userLogOut,users));
+        }
 	
 	public static Packet createPingPacket(){
 		return new Packet(PacketType.PING, null);
@@ -70,5 +82,9 @@ public class Packet implements Serializable {
 	
 	public static Packet createPongPacket(){
 		return new Packet(PacketType.PONG, null);
+	}
+        
+        public static Packet createSecurityPacket(String[] key){
+		return new Packet(PacketType.SECURITY, key);
 	}
 }

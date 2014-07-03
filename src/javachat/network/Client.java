@@ -25,6 +25,7 @@ public class Client extends SocketController {
     private SocketController socketCtrl;
     private String name;
     private boolean server = false;
+    private String securityKey;
 
     public static Client createClient(String hostname, int port, String name, boolean server) throws ConnectException {
         try {
@@ -100,6 +101,12 @@ public class Client extends SocketController {
                     
                     // Not expected
 //                    JavaChat.println("Received unexpected packet type: " + msg.getType().name());
+                    break;
+                case SECURITY:
+                    if(msg.getData()!=null&&msg.getData().length>0){
+                        securityKey = msg.getData()[0];
+                        //JavaChat.println("Key from Chat: " + securityKey);
+                    }
                     break;
                 default:
                     JavaChat.println("Unknown packet type from connection: " + msg.getType().name());

@@ -1,5 +1,6 @@
 package javachat.network;
 
+import br.com.uacari.util.UacariRandom;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -35,6 +36,7 @@ public class Server implements Runnable {
     private ArrayList<ClientSocket> clients;
     private ServerSocket srvr;
     private KeepAlive keepAlive;
+    private String securityKey;
 
     public Server(int port) {
         this.port = port;
@@ -51,13 +53,14 @@ public class Server implements Runnable {
             UPnP.RegisterPort(port);
         }
         
-
         keepAlive = new KeepAlive();
         Thread t1 = new Thread(keepAlive);
         t1.start();
 
         Thread t = new Thread(this);
         t.start();
+        
+        securityKey = UacariRandom.newRandom(14);
     }
 
     /**
@@ -72,6 +75,7 @@ public class Server implements Runnable {
                 Socket skt = srvr.accept();
                 ClientSocket client = new ClientSocket(skt);
                 client.sendMsg(new Packet(PacketType.MSG, new String[] {welcomeMesage}));
+                client.sendMsg(Packet.createSecurityPacket(new String [] {securityKey}));
                 keepAlive.addToQueue(client);
                 clients.add(client);
             }
@@ -228,17 +232,11 @@ public class Server implements Runnable {
                         break;
                     case HELO:
                         name = msg.getData()[0];
-                        String connectedMsg = name + " connected...";
-//                        sendMsgToAll(Packet.createMsgPacket(connectedMsg),true);
                         sendMsgToAll(Packet.createHeloPacketObject(name, getNamesClientOnline()),true);
                         printClientNames();
                         break;
                     case NAME:
-//                        String names[] = msg.getData();
-//                        String newNameMsg = names[0] + " changed name to " + names[1];
-//                        name = names[1];
-//                        sendMsgToAll(Packet.createMsgPacket(newNameMsg),true);
-                        
+
                         name = msg.getData()[1];
                         sendMsgToAll(Packet.createNamePacketObject(msg.getData()[0], msg.getData()[1], getNamesClientOnline()),true);
                         break;
@@ -248,7 +246,6 @@ public class Server implements Runnable {
                         break;
                     case QUIT:
                         this.disconnect();
-//                        JavaChat.println("Client "+ this.getName() +" disconnected.");
                         removeClientQueue(this);
                         sendMsgToAll(Packet.createQuitPacketObject(this.getName(),getNamesClientOnline()));
                         break;

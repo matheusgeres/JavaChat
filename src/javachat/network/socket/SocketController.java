@@ -111,7 +111,6 @@ public abstract class SocketController implements Runnable {
 	
 	private void sendData(Packet data){
 		try {
-                    
                     if(!socket.isClosed()){
                         output.writeObject(data);
                     }
